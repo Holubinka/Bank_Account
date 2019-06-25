@@ -2,32 +2,32 @@ package com.example.demo.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
-@DynamicInsert
-@DynamicUpdate
 @Table(name = "client_account")
 public class ClientAccount {
 
     @Id
     @Column(name = "number_card")
-    private Long number_card;
+    private Long numberCard;
 
     @Column(name = "name")
     private String name;
+
+    @Column(name = "password")
+    private String password;
 
     @Column(name = "amount")
     private BigDecimal amount;
 
     @Transient
     @JsonIgnore
-    private BigDecimal sum_amount;
+    private BigDecimal sumAmount;
 
     @JsonIgnoreProperties("clientAccounts")
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -52,12 +52,12 @@ public class ClientAccount {
         this.bankLogs = bankLogs;
     }
 
-    public Long getNumber_card() {
-        return number_card;
+    public Long getNumberCard() {
+        return numberCard;
     }
 
-    public void setNumber_card(Long number_card) {
-        this.number_card = number_card;
+    public void setNumberCard(Long numberCard) {
+        this.numberCard = numberCard;
     }
 
     public String getName() {
@@ -68,11 +68,49 @@ public class ClientAccount {
         this.name = name;
     }
 
-    public BigDecimal getSum_amount() {
-        return sum_amount;
+    public BigDecimal getSumAmount() {
+        return sumAmount;
     }
 
-    public void setSum_amount(BigDecimal sum_amount) {
-        this.sum_amount = sum_amount;
+    public void setSumAmount(BigDecimal sumAmount) {
+        this.sumAmount = sumAmount;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ClientAccount that = (ClientAccount) o;
+        return Objects.equals(numberCard, that.numberCard) &&
+                Objects.equals(name, that.name) &&
+                Objects.equals(password, that.password) &&
+                Objects.equals(amount, that.amount) &&
+                Objects.equals(sumAmount, that.sumAmount) &&
+                Objects.equals(bankLogs, that.bankLogs);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(numberCard, name, password, amount, sumAmount, bankLogs);
+    }
+
+    @Override
+    public String toString() {
+        return "ClientAccount{" +
+                "numberCard=" + numberCard +
+                ", name='" + name + '\'' +
+                ", password='" + password + '\'' +
+                ", amount=" + amount +
+                ", sumAmount=" + sumAmount +
+                ", bankLogs=" + bankLogs +
+                '}';
     }
 }

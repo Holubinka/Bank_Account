@@ -7,7 +7,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface BankLogRepository extends JpaRepository<BankLog, Long> {
+public interface BankLogDao extends JpaRepository<BankLog, Long> {
 
     @Query(value = "select * " +
             "from bank_log as bl " +
@@ -25,9 +25,9 @@ public interface BankLogRepository extends JpaRepository<BankLog, Long> {
             "where ca_bl.client_account_id in " +
             "(select ca.number_card " +
             "from client_account as ca " +
-            "where ca.number_card=(:clientId)))",
+            "where ca.name=(:cardName)))",
             nativeQuery = true)
-    List<BankLog> findBankLogByClient(@Param("clientId") Long clientId);
+    List<BankLog> findBankLogByClient(@Param("cardName") String cardName);
 
 
 }

@@ -1,16 +1,10 @@
 package com.example.demo.controller;
 
-import com.example.demo.dao.BankLogRepository;
-import com.example.demo.dao.ClientAccountRepository;
-import com.example.demo.exception.CustomNotFoundException;
 import com.example.demo.model.BankLog;
-import com.example.demo.model.ClientAccount;
+import com.example.demo.services.BankLogService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -19,27 +13,16 @@ import java.util.List;
 public class BankLogController {
 
     @Autowired
-    private BankLogRepository bankLogRepository;
+    private BankLogService bankLogService;
 
-    @Autowired
-    private ClientAccountRepository clientAccountRepository;
-
-    @GetMapping("/card/{cardId}")
-    public List<BankLog> findByCard(@PathVariable Long cardId) {
-
-        return bankLogRepository.findBankLogByCard(cardId);
+    @RequestMapping(value = "/card/{cardId}", method = RequestMethod.GET)
+    public ResponseEntity<List<BankLog>> findByCard(@PathVariable Long cardId) {
+        return ResponseEntity.ok(bankLogService.findBankLogByCard(cardId));
     }
 
-    @GetMapping("/client/{name}")
-    public List<BankLog> findByClient(@PathVariable String name) {
-
-        ClientAccount byName = clientAccountRepository.findByName(name);
-
-        if (byName == null) {
-            throw new CustomNotFoundException("Client not found: " + name);
-        }
-
-        return bankLogRepository.findBankLogByClient(byName.getNumber_card());
+    @RequestMapping(value = "/client/{name}", method = RequestMethod.GET)
+    public ResponseEntity<List<BankLog>> findByClient(@PathVariable String name) {
+        return ResponseEntity.ok(bankLogService.findBankLogByClient(name));
     }
 
 

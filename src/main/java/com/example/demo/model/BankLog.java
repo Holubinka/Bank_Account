@@ -21,6 +21,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "bank_log")
@@ -49,7 +50,7 @@ public class BankLog {
     private Date dateTime;
 
     @Column(name = "sum_amount")
-    private BigDecimal sum_amount;
+    private BigDecimal sumAmount;
 
     @JsonIgnoreProperties("bankLogs")
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -129,11 +130,46 @@ public class BankLog {
         this.clientAccounts = clientAccounts;
     }
 
-    public BigDecimal getSum_amount() {
-        return sum_amount;
+
+    public BigDecimal getSumAmount() {
+        return sumAmount;
     }
 
-    public void setSum_amount(BigDecimal sum_amount) {
-        this.sum_amount = sum_amount;
+    public void setSumAmount(BigDecimal sumAmount) {
+        this.sumAmount = sumAmount;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BankLog bankLog = (BankLog) o;
+        return Objects.equals(id, bankLog.id) &&
+                bankOperationType == bankLog.bankOperationType &&
+                Objects.equals(operationDescription, bankLog.operationDescription) &&
+                Objects.equals(recipient, bankLog.recipient) &&
+                Objects.equals(sender, bankLog.sender) &&
+                Objects.equals(dateTime, bankLog.dateTime) &&
+                Objects.equals(sumAmount, bankLog.sumAmount) &&
+                Objects.equals(clientAccounts, bankLog.clientAccounts);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, bankOperationType, operationDescription, recipient, sender, dateTime, sumAmount, clientAccounts);
+    }
+
+    @Override
+    public String toString() {
+        return "BankLog{" +
+                "id=" + id +
+                ", bankOperationType=" + bankOperationType +
+                ", operationDescription='" + operationDescription + '\'' +
+                ", recipient=" + recipient +
+                ", sender=" + sender +
+                ", dateTime=" + dateTime +
+                ", sumAmount=" + sumAmount +
+                ", clientAccounts=" + clientAccounts +
+                '}';
     }
 }

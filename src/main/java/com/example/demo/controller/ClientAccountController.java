@@ -1,54 +1,52 @@
 package com.example.demo.controller;
 
-import com.example.demo.dao.ClientAccountRepository;
-import com.example.demo.exception.CustomNotFoundException;
 import com.example.demo.model.ClientAccount;
+import com.example.demo.services.ClientAccountService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 @RestController
-@RequestMapping("/account")
+@RequestMapping("/bank")
 public class ClientAccountController {
 
-    private final static String SENDER = "sender";
-    private final static String RECIPIENT = "recipient";
-    private final static String AMOUNT = "amount";
-
     @Autowired
-    private ClientAccountRepository clientAccountRepository;
+    private ClientAccountService clientAccountService;
 
-    @PostMapping("/transfer")
-    public Map<String, ClientAccount> transfer(@RequestBody Map<String, Long> payload) {
+    @RequestMapping(value = "", method = RequestMethod.GET)
+    public ResponseEntity<List<ClientAccount>> getAll() {
+        List<ClientAccount> categories = clientAccountService.getAll();
+        ResponseEntity<List<ClientAccount>> result;
 
-        Long senderId = payload.get(SENDER);
-        Long recipientId = payload.get(RECIPIENT);
-        BigDecimal amount = BigDecimal.valueOf(payload.get(AMOUNT));
-
-        ClientAccount sender = clientAccountRepository.findById(senderId).orElseThrow(() -> new CustomNotFoundException("Not fount sender: " + senderId));
-        ClientAccount recipient = clientAccountRepository.findById(recipientId).orElseThrow(() -> new CustomNotFoundException("Not fount recipient: " + recipientId));
-        BigDecimal senderAmount = sender.getAmount();
-
-        if (amount.compareTo(BigDecimal.valueOf(0)) == -1 || senderAmount.compareTo(amount) == -1) {
-            throw new CustomNotFoundException("The sender:" + senderId + " does not have enough money for the transaction");
+        if (categories.isEmpty()) {
+            result = ResponseEntity.notFound().build();
+        } else {
+            result = new ResponseEntity<>(categories, HttpStatus.OK);
         }
-        sender.setSum_amount(amount.negate());
-        recipient.setSum_amount(amount);
-        sender.setAmount(senderAmount.subtract(amount));
-        recipient.setAmount(recipient.getAmount().add(amount));
+        return result;
+    }
 
-        Map<String, ClientAccount> accountMap = new HashMap<>();
-        accountMap.put(SENDER, sender);
-        accountMap.put(RECIPIENT, recipient);
+    @RequestMapping(value = "/add_money/{numberCard}", method = RequestMethod.PUT)
+    public ResponseEntity<ClientAccount> add_money(@RequestBody ClientAccount clientAccount, @PathVariable Long numberCard) {
+        return clientAccountService.update(numberCard, clientAccount.getAmount())
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.CONFLICT));
+    }
 
-        clientAccountRepository.saveAll(accountMap.values());
+    @RequestMapping(value = "/get_money/{numberCard}", method = RequestMethod.PUT)
+    public ResponseEntity<ClientAccount> get_money(@RequestBody ClientAccount clientAccount, @PathVariable Long numberCard) {
+        return clientAccountService.update(numberCard, clientAccount.getAmount().negate())
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.CONFLICT));
+    }
 
-        return accountMap;
+    @RequestMapping(value = "/transfer/{numberCardSender}", method = RequestMethod.PUT)
+    public ResponseEntity<List<ClientAccount>> transfer(@RequestBody ClientAccount recipientClientAccount, @PathVariable Long numberCardSender) {
+        return clientAccountService.saveAll(numberCardSender, recipientClientAccount)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.CONFLICT));
     }
 }
