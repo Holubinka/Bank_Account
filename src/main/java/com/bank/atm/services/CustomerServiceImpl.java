@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-@Service("CustomerServiceImpl")
+@Service("customerServiceImpl")
 public class CustomerServiceImpl implements CustomerService {
 
     @Autowired
@@ -39,7 +39,7 @@ public class CustomerServiceImpl implements CustomerService {
         Customer Customer = CustomerDao.findById(cardNumber).orElseThrow(IllegalArgumentException::new);
 
         if(amount.compareTo(BigDecimal.valueOf(0))==-1) {
-            notEnoughMoney(amount, Customer);
+            notEnoughMoney(amount.negate(), Customer);
         }
 
         verifyValidAmount(amount);
@@ -55,7 +55,7 @@ public class CustomerServiceImpl implements CustomerService {
     public Optional<List<Customer>>saveAll(Long cardNumberSender, Customer recipientCustomer) {
         BigDecimal amount = recipientCustomer.getAmount();
         Customer sender = CustomerDao.findById(cardNumberSender).orElseThrow(() -> new CustomNotFoundException("Not fount sender: " + cardNumberSender));
-        Customer recipient = CustomerDao.findById(recipientCustomer.getcardNumber()).orElseThrow(() -> new CustomNotFoundException("Not fount recipient: " + recipientCustomer.getcardNumber()));
+        Customer recipient = CustomerDao.findById(recipientCustomer.getCardNumber()).orElseThrow(() -> new CustomNotFoundException("Not fount recipient: " + recipientCustomer.getCardNumber()));
 
         notEnoughMoney(amount,sender);
         sender.setSumAmount(amount);
@@ -85,17 +85,17 @@ public class CustomerServiceImpl implements CustomerService {
     private void saveMoneyHistoryBankLog(Customer result) {
         BankLog bankLog;
         if (result.getSumAmount().compareTo(BigDecimal.valueOf(0))==-1) {
-            Customer Customer = CustomerDao.findById(result.getcardNumber()).orElseThrow(IllegalArgumentException::new);
+            Customer Customer = CustomerDao.findById(result.getCardNumber()).orElseThrow(IllegalArgumentException::new);
             bankLog = new BankLog(BankOperationType.GET_MONEY, BankOperationType.GET_MONEY.toString());
-            bankLog.setSender(Customer.getcardNumber());
-            bankLog.setRecipient(result.getcardNumber());
+            bankLog.setSender(Customer.getCardNumber());
+            bankLog.setRecipient(result.getCardNumber());
             bankLog.setSumAmount(Customer.getSumAmount());
             bankLog.addCustomer(Customer);
         } else {
-            Customer Customer = CustomerDao.findById(result.getcardNumber()).orElseThrow(IllegalArgumentException::new);
+            Customer Customer = CustomerDao.findById(result.getCardNumber()).orElseThrow(IllegalArgumentException::new);
             bankLog = new BankLog(BankOperationType.ADD_MONEY, BankOperationType.ADD_MONEY.toString());
-            bankLog.setSender(Customer.getcardNumber());
-            bankLog.setRecipient(result.getcardNumber());
+            bankLog.setSender(Customer.getCardNumber());
+            bankLog.setRecipient(result.getCardNumber());
             bankLog.setSumAmount(Customer.getSumAmount());
             bankLog.addCustomer(Customer);
         }
@@ -106,8 +106,8 @@ public class CustomerServiceImpl implements CustomerService {
         BankLog bankLog = new BankLog(BankOperationType.TRANSFER, BankOperationType.TRANSFER.toString());
         Customer sender = result.get(String.valueOf(Constants.SENDER));
         Customer recipient = result.get(String.valueOf(Constants.RECIPIENT));
-        bankLog.setSender(sender.getcardNumber());
-        bankLog.setRecipient(recipient.getcardNumber());
+        bankLog.setSender(sender.getCardNumber());
+        bankLog.setRecipient(recipient.getCardNumber());
         bankLog.setSumAmount(recipient.getSumAmount());
         bankLog.addCustomer(sender);
         bankLog.addCustomer(recipient);
@@ -117,7 +117,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     private UserDetails toUserDetails(Customer user) {
         return org.springframework.security.core.userdetails.User.builder()
-                .username(String.valueOf(user.getcardNumber()))
+                .username(String.valueOf(user.getCardNumber()))
                 .password(user.getPassword())
                 .authorities(Collections.emptyList())
                 .build();

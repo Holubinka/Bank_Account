@@ -57,7 +57,7 @@ public class BankLog {
     @JoinTable(name = "client_account_bank_log",
             joinColumns = @JoinColumn(name = "bank_log_id"),
             inverseJoinColumns = @JoinColumn(name = "client_account_id"))
-    private List<Customer> Customers;
+    private List<Customer> customers;
 
     public BankLog() {
     }
@@ -68,10 +68,10 @@ public class BankLog {
     }
 
     public void addCustomer(Customer Customer) {
-        if (Customers == null) {
-            Customers = new ArrayList<>();
+        if (customers == null) {
+            customers = new ArrayList<>();
         }
-        Customers.add(Customer);
+        customers.add(Customer);
     }
 
     public Long getId() {
@@ -122,20 +122,20 @@ public class BankLog {
         this.dateTime = dateTime;
     }
 
-    public List<Customer> getCustomers() {
-        return Customers;
-    }
-
-    public void setCustomers(List<Customer> Customers) {
-        this.Customers = Customers;
-    }
-
     public BigDecimal getSumAmount() {
         return sumAmount;
     }
 
     public void setSumAmount(BigDecimal sumAmount) {
         this.sumAmount = sumAmount;
+    }
+
+    public List<Customer> getCustomers() {
+        return customers;
+    }
+
+    public void setCustomers(List<Customer> customers) {
+        this.customers = customers;
     }
 
     @Override
@@ -150,25 +150,13 @@ public class BankLog {
                 Objects.equals(sender, bankLog.sender) &&
                 Objects.equals(dateTime, bankLog.dateTime) &&
                 Objects.equals(sumAmount, bankLog.sumAmount) &&
-                Objects.equals(Customers, bankLog.Customers);
+                Objects.equals(customers, bankLog.customers);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, bankOperationType, operationDescription, recipient, sender, dateTime, sumAmount, Customers);
+        return Objects.hash(id, bankOperationType, operationDescription, recipient, sender, dateTime, sumAmount, customers);
     }
 
-    @Override
-    public String toString() {
-        return "BankLog{" +
-                "id=" + id +
-                ", bankOperationType=" + bankOperationType +
-                ", operationDescription='" + operationDescription + '\'' +
-                ", recipient=" + recipient +
-                ", sender=" + sender +
-                ", dateTime=" + dateTime +
-                ", sumAmount=" + sumAmount +
-                ", Customers=" + Customers +
-                '}';
-    }
+
 }

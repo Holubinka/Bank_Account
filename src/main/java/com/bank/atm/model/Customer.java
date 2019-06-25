@@ -29,7 +29,7 @@ public class Customer {
     @JsonIgnore
     private BigDecimal sumAmount;
 
-    @JsonIgnoreProperties("Customers")
+    @JsonIgnoreProperties("customers")
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "client_account_bank_log",
             joinColumns = @JoinColumn(name = "client_account_id"),
@@ -52,11 +52,11 @@ public class Customer {
         this.bankLogs = bankLogs;
     }
 
-    public Long getcardNumber() {
+    public Long getCardNumber() {
         return cardNumber;
     }
 
-    public void setcardNumber(Long cardNumber) {
+    public void setCardNumber(Long cardNumber) {
         this.cardNumber = cardNumber;
     }
 

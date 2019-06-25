@@ -33,7 +33,7 @@ public class JWTAuthorizationFilter extends UsernamePasswordAuthenticationFilter
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         Customer user = getUserFromInputStream(request);
         return authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                user.getcardNumber(),
+                user.getCardNumber(),
                 user.getPassword(),
                 Collections.emptyList()
         ));

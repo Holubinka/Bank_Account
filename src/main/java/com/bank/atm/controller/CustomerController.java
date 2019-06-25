@@ -16,7 +16,7 @@ public class CustomerController {
     @Autowired
     private CustomerService CustomerService;
 
-    @RequestMapping(value = "", method = RequestMethod.GET)
+    @RequestMapping(value = "/", method = RequestMethod.GET)
     public ResponseEntity<List<Customer>> getAll() {
         List<Customer> categories = CustomerService.getAll();
         ResponseEntity<List<Customer>> result;
@@ -38,7 +38,7 @@ public class CustomerController {
 
     @RequestMapping(value = "/get_money/{cardNumber}", method = RequestMethod.PUT)
     public ResponseEntity<Customer> get_money(@RequestBody Customer Customer, @PathVariable Long cardNumber) {
-        return CustomerService.update(cardNumber, Customer.getAmount())
+        return CustomerService.update(cardNumber, Customer.getAmount().negate())
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.CONFLICT));
     }
