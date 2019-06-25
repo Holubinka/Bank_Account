@@ -1,9 +1,9 @@
-package com.example.demo.model;
+package com.bank.atm.model;
 
 public enum BankOperationType {
     GET_MONEY,
     ADD_MONEY,
     TRANSFER,
-    HISTORY_CARD,
-    HISTORY_CLIENT
+    VIEW_CARD_HISTORY,
+    VIEW_CUSTOMER_HISTORY
 }

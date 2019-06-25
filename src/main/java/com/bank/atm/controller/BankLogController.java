@@ -1,7 +1,7 @@
-package com.example.demo.controller;
+package com.bank.atm.controller;
 
-import com.example.demo.model.BankLog;
-import com.example.demo.services.BankLogService;
+import com.bank.atm.model.BankLog;
+import com.bank.atm.services.BankLogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

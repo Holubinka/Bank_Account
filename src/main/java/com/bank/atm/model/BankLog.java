@@ -1,4 +1,4 @@
-package com.example.demo.model;
+package com.bank.atm.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.CreationTimestamp;
@@ -57,7 +57,7 @@ public class BankLog {
     @JoinTable(name = "client_account_bank_log",
             joinColumns = @JoinColumn(name = "bank_log_id"),
             inverseJoinColumns = @JoinColumn(name = "client_account_id"))
-    private List<ClientAccount> clientAccounts;
+    private List<Customer> Customers;
 
     public BankLog() {
     }
@@ -67,11 +67,11 @@ public class BankLog {
         this.operationDescription = operationDescription;
     }
 
-    public void addClientAccount(ClientAccount clientAccount) {
-        if (clientAccounts == null) {
-            clientAccounts = new ArrayList<>();
+    public void addCustomer(Customer Customer) {
+        if (Customers == null) {
+            Customers = new ArrayList<>();
         }
-        clientAccounts.add(clientAccount);
+        Customers.add(Customer);
     }
 
     public Long getId() {
@@ -122,14 +122,13 @@ public class BankLog {
         this.dateTime = dateTime;
     }
 
-    public List<ClientAccount> getClientAccounts() {
-        return clientAccounts;
+    public List<Customer> getCustomers() {
+        return Customers;
     }
 
-    public void setClientAccounts(List<ClientAccount> clientAccounts) {
-        this.clientAccounts = clientAccounts;
+    public void setCustomers(List<Customer> Customers) {
+        this.Customers = Customers;
     }
-
 
     public BigDecimal getSumAmount() {
         return sumAmount;
@@ -151,12 +150,12 @@ public class BankLog {
                 Objects.equals(sender, bankLog.sender) &&
                 Objects.equals(dateTime, bankLog.dateTime) &&
                 Objects.equals(sumAmount, bankLog.sumAmount) &&
-                Objects.equals(clientAccounts, bankLog.clientAccounts);
+                Objects.equals(Customers, bankLog.Customers);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, bankOperationType, operationDescription, recipient, sender, dateTime, sumAmount, clientAccounts);
+        return Objects.hash(id, bankOperationType, operationDescription, recipient, sender, dateTime, sumAmount, Customers);
     }
 
     @Override
@@ -169,7 +168,7 @@ public class BankLog {
                 ", sender=" + sender +
                 ", dateTime=" + dateTime +
                 ", sumAmount=" + sumAmount +
-                ", clientAccounts=" + clientAccounts +
+                ", Customers=" + Customers +
                 '}';
     }
 }

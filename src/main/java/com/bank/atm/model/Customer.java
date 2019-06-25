@@ -1,4 +1,4 @@
-package com.example.demo.model;
+package com.bank.atm.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -10,11 +10,11 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "client_account")
-public class ClientAccount {
+public class Customer {
 
     @Id
     @Column(name = "number_card")
-    private Long numberCard;
+    private Long cardNumber;
 
     @Column(name = "name")
     private String name;
@@ -29,7 +29,7 @@ public class ClientAccount {
     @JsonIgnore
     private BigDecimal sumAmount;
 
-    @JsonIgnoreProperties("clientAccounts")
+    @JsonIgnoreProperties("Customers")
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "client_account_bank_log",
             joinColumns = @JoinColumn(name = "client_account_id"),
@@ -52,12 +52,12 @@ public class ClientAccount {
         this.bankLogs = bankLogs;
     }
 
-    public Long getNumberCard() {
-        return numberCard;
+    public Long getcardNumber() {
+        return cardNumber;
     }
 
-    public void setNumberCard(Long numberCard) {
-        this.numberCard = numberCard;
+    public void setcardNumber(Long cardNumber) {
+        this.cardNumber = cardNumber;
     }
 
     public String getName() {
@@ -88,8 +88,8 @@ public class ClientAccount {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ClientAccount that = (ClientAccount) o;
-        return Objects.equals(numberCard, that.numberCard) &&
+        Customer that = (Customer) o;
+        return Objects.equals(cardNumber, that.cardNumber) &&
                 Objects.equals(name, that.name) &&
                 Objects.equals(password, that.password) &&
                 Objects.equals(amount, that.amount) &&
@@ -99,13 +99,13 @@ public class ClientAccount {
 
     @Override
     public int hashCode() {
-        return Objects.hash(numberCard, name, password, amount, sumAmount, bankLogs);
+        return Objects.hash(cardNumber, name, password, amount, sumAmount, bankLogs);
     }
 
     @Override
     public String toString() {
-        return "ClientAccount{" +
-                "numberCard=" + numberCard +
+        return "Customer{" +
+                "cardNumber=" + cardNumber +
                 ", name='" + name + '\'' +
                 ", password='" + password + '\'' +
                 ", amount=" + amount +

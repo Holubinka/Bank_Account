@@ -1,9 +1,9 @@
-package com.example.demo.services;
+package com.bank.atm.services;
 
-import com.example.demo.dao.BankLogDao;
-import com.example.demo.model.BankLog;
-import com.example.demo.model.BankOperationType;
-import com.example.demo.model.Constants;
+import com.bank.atm.dao.BankLogDao;
+import com.bank.atm.model.BankLog;
+import com.bank.atm.model.BankOperationType;
+import com.bank.atm.model.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,13 +32,11 @@ public class BankLogServiceImpl implements BankLogService {
     private void saveHistoryBankLogs(String nameMethod) {
         String method = nameMethod.toUpperCase();
         BankLog bankLog;
-        if (method.contains(String.valueOf(Constants.CLIENT))) {
-            bankLog = new BankLog(BankOperationType.HISTORY_CLIENT, BankOperationType.HISTORY_CLIENT.toString());
+        if (method.contains(String.valueOf(Constants.CUSTOMER))) {
+            bankLog = new BankLog(BankOperationType.VIEW_CUSTOMER_HISTORY, BankOperationType.VIEW_CUSTOMER_HISTORY.toString());
         } else {
-            bankLog = new BankLog(BankOperationType.HISTORY_CARD, BankOperationType.HISTORY_CARD.toString());
+            bankLog = new BankLog(BankOperationType.VIEW_CARD_HISTORY, BankOperationType.VIEW_CARD_HISTORY.toString());
         }
         bankLogDao.save(bankLog);
     }
-
-
 }

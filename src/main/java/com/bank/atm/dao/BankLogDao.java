@@ -1,6 +1,6 @@
-package com.example.demo.dao;
+package com.bank.atm.dao;
 
-import com.example.demo.model.BankLog;
+import com.bank.atm.model.BankLog;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

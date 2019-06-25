@@ -1,7 +1,7 @@
-package com.example.demo.model;
+package com.bank.atm.model;
 
 public enum Constants {
     SENDER,
     RECIPIENT,
-    CLIENT
+    CUSTOMER
 }

@@ -1,6 +1,7 @@
-package com.example.demo.services;
+package com.bank.atm.services;
 
-import com.example.demo.model.BankLog;
+import com.bank.atm.model.BankLog;
+
 import java.util.List;
 
 public interface BankLogService {

@@ -1,4 +1,4 @@
-package com.example.demo.exception;
+package com.bank.atm.exception;
 
 public class CustomNotFoundException extends RuntimeException {
 

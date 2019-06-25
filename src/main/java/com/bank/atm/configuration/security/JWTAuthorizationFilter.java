@@ -1,6 +1,6 @@
-package com.example.demo.configuration.security;
+package com.bank.atm.configuration.security;
 
-import com.example.demo.model.ClientAccount;
+import com.bank.atm.model.Customer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -31,16 +31,17 @@ public class JWTAuthorizationFilter extends UsernamePasswordAuthenticationFilter
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
-        ClientAccount user = getUserFromIS(request);
+        Customer user = getUserFromInputStream(request);
         return authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                user.getNumberCard(),
+                user.getcardNumber(),
                 user.getPassword(),
                 Collections.emptyList()
         ));
     }
 
     @Override
-    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
+    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response,
+                                            FilterChain chain, Authentication authResult) throws IOException, ServletException {
         String token = Jwts.builder()
                 .setSubject(((org.springframework.security.core.userdetails.User) authResult.getPrincipal()).getUsername())
                 .setExpiration(Date.from(LocalDate.now().plusDays(5).atStartOfDay(ZoneId.systemDefault()).toInstant()))
@@ -51,11 +52,11 @@ public class JWTAuthorizationFilter extends UsernamePasswordAuthenticationFilter
         response.addHeader("Access-Control-Expose-Headers", "Authorization");
     }
 
-    private ClientAccount getUserFromIS(HttpServletRequest request) {
-        ClientAccount user = null;
+    private Customer getUserFromInputStream(HttpServletRequest request) {
+        Customer user = null;
 
         try {
-            user = new ObjectMapper().readValue(request.getInputStream(), ClientAccount.class);
+            user = new ObjectMapper().readValue(request.getInputStream(), Customer.class);
         } catch (IOException e) {
             e.printStackTrace();
         }
