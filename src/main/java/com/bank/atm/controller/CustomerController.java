@@ -5,8 +5,12 @@ import com.bank.atm.services.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -14,11 +18,11 @@ import java.util.List;
 public class CustomerController {
 
     @Autowired
-    private CustomerService CustomerService;
+    private CustomerService customerService;
 
-    @RequestMapping(value = "/", method = RequestMethod.GET)
+    @RequestMapping(value = "", method = RequestMethod.GET)
     public ResponseEntity<List<Customer>> getAll() {
-        List<Customer> categories = CustomerService.getAll();
+        List<Customer> categories = customerService.getAll();
         ResponseEntity<List<Customer>> result;
 
         if (categories.isEmpty()) {
@@ -29,23 +33,23 @@ public class CustomerController {
         return result;
     }
 
-    @RequestMapping(value = "/add_money/{cardNumber}", method = RequestMethod.PUT)
-    public ResponseEntity<Customer> add_money(@RequestBody Customer Customer, @PathVariable Long cardNumber) {
-        return CustomerService.update(cardNumber, Customer.getAmount())
+    @RequestMapping(value = "/add_money", method = RequestMethod.PUT)
+    public ResponseEntity<Customer> add_money(@RequestBody Customer Customer, Principal principal) {
+        return customerService.update(Long.parseLong(principal.getName()), Customer.getAmount())
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.CONFLICT));
     }
 
-    @RequestMapping(value = "/get_money/{cardNumber}", method = RequestMethod.PUT)
-    public ResponseEntity<Customer> get_money(@RequestBody Customer Customer, @PathVariable Long cardNumber) {
-        return CustomerService.update(cardNumber, Customer.getAmount().negate())
+    @RequestMapping(value = "/get_money", method = RequestMethod.PUT)
+    public ResponseEntity<Customer> get_money(@RequestBody Customer Customer, Principal principal) {
+        return customerService.update(Long.parseLong(principal.getName()), Customer.getAmount().negate())
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.CONFLICT));
     }
 
-    @RequestMapping(value = "/transfer/{cardNumberSender}", method = RequestMethod.PUT)
-    public ResponseEntity<List<Customer>> transfer(@RequestBody Customer recipientCustomer, @PathVariable Long cardNumberSender) {
-        return CustomerService.saveAll(cardNumberSender, recipientCustomer)
+    @RequestMapping(value = "/transfer", method = RequestMethod.PUT)
+    public ResponseEntity<List<Customer>> transfer(@RequestBody Customer recipientCustomer, Principal principal) {
+        return customerService.saveAll(Long.parseLong(principal.getName()), recipientCustomer)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.CONFLICT));
     }

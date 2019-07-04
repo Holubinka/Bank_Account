@@ -3,9 +3,12 @@ package com.bank.atm.controller;
 import com.bank.atm.model.BankLog;
 import com.bank.atm.services.BankLogService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -15,15 +18,9 @@ public class BankLogController {
     @Autowired
     private BankLogService bankLogService;
 
-    @RequestMapping(value = "/card/{cardId}", method = RequestMethod.GET)
-    public ResponseEntity<List<BankLog>> findByCard(@PathVariable Long cardId) {
-        return ResponseEntity.ok(bankLogService.findBankLogByCard(cardId));
+    @RequestMapping(value = "/card", method = RequestMethod.GET)
+    public ResponseEntity<List<BankLog>> findByCard(Principal principal, @RequestParam("from") @DateTimeFormat(pattern = "yyyy-MM-dd") Date fromDate,
+                                                    @RequestParam("to") @DateTimeFormat(pattern = "yyyy-MM-dd") Date toDate) {
+        return ResponseEntity.ok(bankLogService.findBankLogByCard(Long.parseLong(principal.getName()), fromDate, toDate));
     }
-
-    @RequestMapping(value = "/client/{name}", method = RequestMethod.GET)
-    public ResponseEntity<List<BankLog>> findByClient(@PathVariable String name) {
-        return ResponseEntity.ok(bankLogService.findBankLogByClient(name));
-    }
-
-
 }
